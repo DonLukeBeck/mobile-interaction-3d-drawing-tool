@@ -16,7 +16,8 @@ detector = HandDetector(detectionCon=0.8, maxHands=2)
  
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 serverAddressPort = ("127.0.0.1", 5052)
- 
+
+print("Start tracking!") 
 while True:
     # Get image frame
     success, img = cap.read()
