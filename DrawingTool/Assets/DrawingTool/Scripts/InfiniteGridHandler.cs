@@ -5,7 +5,7 @@ using UnityEngine;
 public class InfiniteGridHandler : MonoBehaviour
 {
     public Transform target;
-    public float snap = 2.3f;
+    public float snap = 10f;
 
     // Update is called once per frame
     void Update()

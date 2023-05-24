@@ -37,8 +37,10 @@ public class CameraMovement : MonoBehaviour
         }
 
         //mouse input
-        turn.x += Input.GetAxis("Mouse X") * cameraSensitivity;
-        turn.y += Input.GetAxis("Mouse Y") * cameraSensitivity;
-        transform.localRotation = Quaternion.Euler(-turn.y, turn.x, 0);
+        if (!Input.GetMouseButton(0)) { 
+            turn.x += Input.GetAxis("Mouse X") * cameraSensitivity;
+            turn.y += Input.GetAxis("Mouse Y") * cameraSensitivity;
+            transform.localRotation = Quaternion.Euler(-turn.y, turn.x, 0);
+        }
     }
 }

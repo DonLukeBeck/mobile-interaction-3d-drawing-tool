@@ -9,6 +9,7 @@ public class HandTracking : MonoBehaviour
     GameObject hand;
     GameObject[] joints;
     GameObject[] bones;
+    public Vector3 averagePos;
     
     List<Tuple<int,int>> handDescriptor = new List<Tuple<int, int>>()
     {
@@ -80,13 +81,18 @@ public class HandTracking : MonoBehaviour
         //0        1*3      2*3
         //x1,y1,z1,x2,y2,z2,x3,y3,z3
 
+        Vector3 posAcc = new Vector3(0,0,0);
         for (int i = 0; i < handDescriptor.Count; i++)
         {
             float x = 7 - float.Parse(points[i * 3]) / 100;
             float y = float.Parse(points[i * 3 + 1]) / 100;
             float z = float.Parse(points[i * 3 + 2]) / 100;
 
-            joints[i].transform.localPosition = new Vector3(x, y, z);
+            Vector3 pos = new Vector3(x, y, z);
+            joints[i].transform.localPosition = pos;
+            posAcc += pos;
         }
+
+        averagePos = posAcc / handDescriptor.Count;
     }
 }

@@ -315,6 +315,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 20
+  turn: {x: 0, y: 0}
+  cameraSensitivity: 1.1
+  deltaMove: {x: 0, y: 0, z: 0}
 --- !u!1 &1138964491
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,6 +329,7 @@ GameObject:
   - component: {fileID: 1138964492}
   - component: {fileID: 1138964493}
   - component: {fileID: 1138964494}
+  - component: {fileID: 1138964495}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -377,6 +381,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   udpReceive: {fileID: 1138964493}
+--- !u!114 &1138964495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1138964491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a319ae147d6a5e9409f098b5b1150244, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brush: {fileID: 1215493416236041978, guid: deb489bce7da3f045b82872c9e210226, type: 3}
+  brushSize: 0.99
 --- !u!1 &1647161181
 GameObject:
   m_ObjectHideFlags: 0
@@ -409,8 +427,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b78e6ed30089ec04bb8a7d5f0cb8d810, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1138964492}
-  snap: 0.4
+  target: {fileID: 963194228}
+  snap: 10
 --- !u!64 &1647161183
 MeshCollider:
   m_ObjectHideFlags: 0
