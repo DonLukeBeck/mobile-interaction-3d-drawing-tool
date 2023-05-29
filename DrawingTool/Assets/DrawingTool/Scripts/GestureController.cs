@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Rendering;
 
 [System.Serializable]
 public class GestureController : MonoBehaviour
@@ -8,6 +9,10 @@ public class GestureController : MonoBehaviour
     private GameObject handLandmarks;
 
     private List<GameObject> points = new List<GameObject>();
+
+    public float bentThreshold = 20;
+    public float thumbBentThreshold = 5;
+    public string gesture = "";
 
     private void Start()
     {
@@ -20,6 +25,14 @@ public class GestureController : MonoBehaviour
         {
             if (!FillChildren()) return;
         }
+
+        List<Vector3> thumbPositions = new List<Vector3>()
+        {
+            points[1].transform.localPosition,
+            points[2].transform.localPosition,
+            points[3].transform.localPosition,
+            points[4].transform.localPosition
+        };
 
         List<Vector3> indexPositions = new List<Vector3>()
         {
@@ -53,25 +66,32 @@ public class GestureController : MonoBehaviour
             points[20].transform.localPosition
         };
 
+        float thumbAngle = GetAverageAngle(thumbPositions);
         float indexAngle = GetAverageAngle(indexPositions);
         float middleAngle = GetAverageAngle(middlePositions);
         float ringAngle = GetAverageAngle(ringPositions);
         float pinkyAngle = GetAverageAngle(pinkyPositions);
 
-        float fistThreshold = 20;
-        if (indexAngle > fistThreshold && middleAngle > fistThreshold && ringAngle > fistThreshold && pinkyAngle > fistThreshold)
-        {
-            Debug.Log("You're making a fist!");
-        }
-        else
-        {
-            Debug.Log("You're not making a fist!");
-        }
+        bool thumbBent = thumbAngle > thumbBentThreshold;
+        bool indexBent = indexAngle > bentThreshold;
+        bool middleBent = middleAngle > bentThreshold;
+        bool ringBent = ringAngle > bentThreshold;
+        bool pinkyBent = pinkyAngle > bentThreshold;
+
+        gesture = GetGesture(thumbBent, indexBent, middleBent, ringBent, pinkyBent);
+    }
+
+    private string GetGesture(bool thumb, bool index, bool middle, bool ring, bool pinky)
+    {
+        if (thumb && index && middle && ring && pinky) return "fist";
+        if (index && middle && ring && pinky) return "thumbsup";
+        if (ring && pinky) return "peace";
+        return "open";
     }
 
     private bool FillChildren()
     {
-        if (handLandmarks.transform.GetChild(0) == null) return false;
+        if (handLandmarks.transform.childCount == 0) return false;
         foreach (Transform child in handLandmarks.transform.GetChild(0).GetChild(0).transform)
         {
             points.Add(child.gameObject);
