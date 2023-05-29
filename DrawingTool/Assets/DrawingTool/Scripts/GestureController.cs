@@ -14,12 +14,10 @@ public class GestureController : MonoBehaviour
     public float thumbBentThreshold = 5;
     public string gesture = "";
 
-    public Vector3 averagePosition;
 
     private void Start()
     {
         FillChildren();
-        averagePosition = new Vector3(0, 0, 0);
     }
 
     public void CheckGesture()
@@ -68,13 +66,6 @@ public class GestureController : MonoBehaviour
             points[19].transform.localPosition,
             points[20].transform.localPosition
         };
-
-        for (int i = 0; i < points.Count; i++)
-        {
-            averagePosition += points[i].transform.localPosition;
-        }
-
-        averagePosition /= points.Count;
 
         float thumbAngle = GetAverageAngle(thumbPositions);
         float indexAngle = GetAverageAngle(indexPositions);

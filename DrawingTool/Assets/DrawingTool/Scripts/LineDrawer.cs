@@ -60,11 +60,8 @@ public class LineDrawer : MonoBehaviour
     Vector3 GetMousePosition() 
     {
         if (drawingTool.gestureControlled)
-        {
-            Debug.Log(Camera.main.ScreenToWorldPoint(gestureController.averagePosition));
-            Ray ray = Camera.main.ScreenPointToRay(gestureController.averagePosition);
-            return ray.origin + ray.direction * 10;
-        } else { 
+            return drawingTool.averagePosition;
+        else { 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             return ray.origin + ray.direction * 10;
         }
