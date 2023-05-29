@@ -85,15 +85,15 @@ namespace Mediapipe.Unity.HandTracking
       {
         yield return new WaitUntil(() => graphRunner.TryGetNext(out palmDetections, out handRectsFromPalmDetections, out handLandmarks, out handWorldLandmarks, out handRectsFromLandmarks, out handedness, false));
       }
-
-      _drawingTool.UpdateJoints(handLandmarks, handedness);
-      _gestureController.CheckGesture();
       
       _palmDetectionsAnnotationController.DrawNow(palmDetections);
       _handRectsFromPalmDetectionsAnnotationController.DrawNow(handRectsFromPalmDetections);
       _handLandmarksAnnotationController.DrawNow(handLandmarks, handedness);
       // TODO: render HandWorldLandmarks annotations
       _handRectsFromLandmarksAnnotationController.DrawNow(handRectsFromLandmarks);
+      
+      _drawingTool.UpdateJoints(handLandmarks, handedness);
+      _gestureController.CheckGesture();
     }
 
     private void OnPalmDetectionsOutput(object stream, OutputEventArgs<List<Detection>> eventArgs)
