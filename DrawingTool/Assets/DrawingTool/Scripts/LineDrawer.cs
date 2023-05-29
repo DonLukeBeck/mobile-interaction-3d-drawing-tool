@@ -11,18 +11,22 @@ public class LineDrawer : MonoBehaviour
     GameObject newLine;
     LineRenderer drawLine;
     public float lineWidth;
-
+    GestureController gestureController;
+    DrawingTool drawingTool;
     // Start is called before the first frame update
     void Start()
     {
         linePoints = new List<Vector3>();
         timer = timeDelay;
+        gestureController = GameObject.Find("DrawingManager").GetComponent<GestureController>();
+        drawingTool = GameObject.Find("DrawingManager").GetComponent<DrawingTool>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        
+        if (Input.GetMouseButtonDown(0) || (gestureController.gesture == "fist" && drawingTool.gestureControlled))
         {
             newLine = new GameObject();
             drawLine = newLine.AddComponent<LineRenderer>();
@@ -35,7 +39,7 @@ public class LineDrawer : MonoBehaviour
         }
 
 
-        if (Input.GetMouseButton(0)) { 
+        if (Input.GetMouseButton(0) || (gestureController.gesture == "fist" && drawingTool.gestureControlled)) { 
             Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red); 
             timer -= Time.deltaTime;
             if(timer <= 0)
@@ -47,7 +51,7 @@ public class LineDrawer : MonoBehaviour
             }
         }
 
-        if(Input.GetMouseButtonUp(0))
+        if(Input.GetMouseButtonUp(0) && (gestureController.gesture != "fist" && drawingTool.gestureControlled))
         {
             linePoints.Clear();
         }
@@ -55,7 +59,13 @@ public class LineDrawer : MonoBehaviour
 
     Vector3 GetMousePosition() 
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        return ray.origin + ray.direction * 10;
+        if (drawingTool.gestureControlled)
+        {
+            Debug.Log(Camera.main.ScreenToWorldPoint(gestureController.averagePosition));
+            return Camera.main.ScreenToWorldPoint(gestureController.averagePosition);
+        } else { 
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            return ray.origin + ray.direction * 10;
+        }
     }
 }

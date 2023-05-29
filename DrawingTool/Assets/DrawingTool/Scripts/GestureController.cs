@@ -14,9 +14,12 @@ public class GestureController : MonoBehaviour
     public float thumbBentThreshold = 5;
     public string gesture = "";
 
+    public Vector3 averagePosition;
+
     private void Start()
     {
         FillChildren();
+        averagePosition = new Vector3(0, 0, 0);
     }
 
     private void Update()
@@ -66,6 +69,8 @@ public class GestureController : MonoBehaviour
             points[20].transform.localPosition
         };
 
+        averagePosition = points[3].transform.localPosition;
+
         float thumbAngle = GetAverageAngle(thumbPositions);
         float indexAngle = GetAverageAngle(indexPositions);
         float middleAngle = GetAverageAngle(middlePositions);
@@ -78,6 +83,7 @@ public class GestureController : MonoBehaviour
         bool ringBent = ringAngle > bentThreshold;
         bool pinkyBent = pinkyAngle > bentThreshold;
 
+        
         gesture = GetGesture(thumbBent, indexBent, middleBent, ringBent, pinkyBent);
     }
 

@@ -10,6 +10,10 @@ public class DrawingTool : MonoBehaviour
     private GameObject hand;
     private GameObject[] joints;
     private GameObject[] bones;
+
+    public bool gestureControlled;
+
+    public Vector3 averagePosition;
     
     List<Tuple<int,int>> handDescriptor = new List<Tuple<int, int>>()
     {
@@ -40,6 +44,7 @@ public class DrawingTool : MonoBehaviour
     {
         joints = new GameObject[handDescriptor.Count];
         bones = new GameObject[handDescriptor.Count];
+        averagePosition = new Vector3(0, 0, 0);
     }
 
     void Start()
@@ -75,6 +80,9 @@ public class DrawingTool : MonoBehaviour
             float z = handLandmarkLists[0].Landmark[i].Z * handScale;
         
             joints[i].transform.localPosition = new Vector3(x, y, z);
+            averagePosition += new Vector3(x, y, z);
+            Debug.Log("F" + new Vector3(x, y, z));
         }
+        averagePosition /= handLandmarkLists[0].Landmark.Count;
     }
 }
