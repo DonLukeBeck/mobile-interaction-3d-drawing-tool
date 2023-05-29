@@ -25,12 +25,8 @@ public class LineDrawer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-<<<<<<< HEAD:DrawingTool/Assets/DrawingTool/Scripts/2D Tool/LineDrawer.cs
-        if (Input.GetMouseButtonDown(1))
-=======
-        
         if (Input.GetMouseButtonDown(0) || (gestureController.gesture == "fist" && drawingTool.gestureControlled))
->>>>>>> main:DrawingTool/Assets/DrawingTool/Scripts/LineDrawer.cs
+
         {
             newLine = new GameObject();
             newLine.transform.parent = this.transform;
@@ -43,12 +39,8 @@ public class LineDrawer : MonoBehaviour
             drawLine.endColor = Color.black;
         }
 
-
-<<<<<<< HEAD:DrawingTool/Assets/DrawingTool/Scripts/2D Tool/LineDrawer.cs
-        if (Input.GetMouseButton(1)) { 
-=======
         if (Input.GetMouseButton(0) || (gestureController.gesture == "fist" && drawingTool.gestureControlled)) { 
->>>>>>> main:DrawingTool/Assets/DrawingTool/Scripts/LineDrawer.cs
+
             Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red); 
             timer -= Time.deltaTime;
             if(timer <= 0)
@@ -60,11 +52,7 @@ public class LineDrawer : MonoBehaviour
             }
         }
 
-<<<<<<< HEAD:DrawingTool/Assets/DrawingTool/Scripts/2D Tool/LineDrawer.cs
-        if(Input.GetMouseButtonUp(1))
-=======
         if(Input.GetMouseButtonUp(0) && (gestureController.gesture != "fist" && drawingTool.gestureControlled))
->>>>>>> main:DrawingTool/Assets/DrawingTool/Scripts/LineDrawer.cs
         {
             foreach(Vector3 point in linePoints)
             {

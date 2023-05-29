@@ -325,11 +325,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 703033858}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ff34a32fe19e944eb9d7326e70e69e0, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b785069fcf225c488081d33de980e37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  linePoints: []
+  timer: 0
   timeDelay: 0.01
+  newLine: {fileID: 0}
+  drawLine: {fileID: 0}
   lineWidth: 0.3
+  gestureController: {fileID: 0}
+  drawingTool: {fileID: 0}
 --- !u!114 &703033865
 MonoBehaviour:
   m_ObjectHideFlags: 0
