@@ -14,6 +14,7 @@ public class GestureController : MonoBehaviour
     public float thumbBentThreshold = 5;
     public string gesture = "";
 
+
     private void Start()
     {
         FillChildren();
@@ -78,6 +79,7 @@ public class GestureController : MonoBehaviour
         bool ringBent = ringAngle > bentThreshold;
         bool pinkyBent = pinkyAngle > bentThreshold;
 
+        
         gesture = GetGesture(thumbBent, indexBent, middleBent, ringBent, pinkyBent);
     }
 

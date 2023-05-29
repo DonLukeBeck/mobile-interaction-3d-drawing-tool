@@ -11,7 +11,7 @@ public class InfiniteGridHandler : MonoBehaviour
     void Update()
     {
         Vector3 pos = new Vector3(Mathf.Round(target.position.x / snap) * snap,   //x 
-                                 -6,                                              //y
+                                 -58.1f,                                              //y
                                   Mathf.Round(target.position.z / snap) * snap);  //z
         transform.position = pos;                                                                                  
     }
