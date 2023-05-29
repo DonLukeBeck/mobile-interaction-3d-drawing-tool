@@ -988,6 +988,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handLandmarks: {fileID: 1254979094}
+  bentThreshold: 20
+  thumbBentThreshold: 5
+  gesture: 
 --- !u!1 &1223870913
 GameObject:
   m_ObjectHideFlags: 0
