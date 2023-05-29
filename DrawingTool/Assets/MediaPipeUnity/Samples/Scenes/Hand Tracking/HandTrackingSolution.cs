@@ -17,6 +17,9 @@ namespace Mediapipe.Unity.HandTracking
     [SerializeField] private MultiHandLandmarkListAnnotationController _handLandmarksAnnotationController;
     [SerializeField] private NormalizedRectListAnnotationController _handRectsFromLandmarksAnnotationController;
 
+    [SerializeField] private DrawingTool _drawingTool;
+    [SerializeField] private GestureController _gestureController;
+    
     public HandTrackingGraph.ModelComplexity modelComplexity
     {
       get => graphRunner.modelComplexity;
@@ -83,6 +86,9 @@ namespace Mediapipe.Unity.HandTracking
         yield return new WaitUntil(() => graphRunner.TryGetNext(out palmDetections, out handRectsFromPalmDetections, out handLandmarks, out handWorldLandmarks, out handRectsFromLandmarks, out handedness, false));
       }
 
+      _drawingTool.UpdateJoints(handLandmarks, handedness);
+      _gestureController.CheckGesture();
+      
       _palmDetectionsAnnotationController.DrawNow(palmDetections);
       _handRectsFromPalmDetectionsAnnotationController.DrawNow(handRectsFromPalmDetections);
       _handLandmarksAnnotationController.DrawNow(handLandmarks, handedness);
