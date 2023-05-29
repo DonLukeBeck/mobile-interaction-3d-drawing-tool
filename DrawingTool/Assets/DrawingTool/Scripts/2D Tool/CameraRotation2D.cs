@@ -2,13 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraRotation2D : MonoBehaviour{
+public class CameraRotation2D : MonoBehaviour
+{
     public Transform target; // The object to rotate around
-    public float rotationSpeed = 0;
+    public float rotationSpeed = 1f;
 
     private Vector3 offset;
-    private bool isDragging = false;
-    private Vector3 lastMousePosition;
 
     private void Start()
     {
@@ -18,26 +17,28 @@ public class CameraRotation2D : MonoBehaviour{
 
     private void LateUpdate()
     {
-        if (Input.GetMouseButtonDown(1))
+        float rotationAmount = rotationSpeed * Time.deltaTime;
+
+        if (Input.GetKey(KeyCode.A))
         {
-            isDragging = true;
-            lastMousePosition = Input.mousePosition;
+            transform.RotateAround(target.position, Vector3.forward, rotationAmount);
+            offset = Quaternion.Euler(0f, 0f, rotationAmount) * offset;
         }
-        else if (Input.GetMouseButtonUp(1))
+        else if (Input.GetKey(KeyCode.D))
         {
-            isDragging = false;
+            transform.RotateAround(target.position, Vector3.back, rotationAmount);
+            offset = Quaternion.Euler(0f, 0f, -rotationAmount) * offset;
         }
 
-        if (isDragging)
+        if (Input.GetKey(KeyCode.W))
         {
-            Vector3 mouseDelta = Input.mousePosition - lastMousePosition;
-            float mouseX = mouseDelta.x * rotationSpeed;
-            float mouseY = mouseDelta.y * rotationSpeed;
-
-            Quaternion rotation = Quaternion.Euler(-mouseY, mouseX, 0f);
-            offset = rotation * offset;
-
-            lastMousePosition = Input.mousePosition;
+            transform.RotateAround(target.position, Vector3.right, rotationAmount);
+            offset = Quaternion.Euler(rotationAmount, 0f, 0f) * offset;
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            transform.RotateAround(target.position, Vector3.left, rotationAmount);
+            offset = Quaternion.Euler(-rotationAmount, 0f, 0f) * offset;
         }
 
         transform.position = target.position + offset;
