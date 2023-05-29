@@ -19,7 +19,7 @@ public class GestureController : MonoBehaviour
         FillChildren();
     }
 
-    private void Update()
+    public void CheckGesture()
     {
         if (points.Count == 0)
         {
