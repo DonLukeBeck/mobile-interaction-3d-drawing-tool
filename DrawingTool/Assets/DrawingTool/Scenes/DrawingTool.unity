@@ -38,7 +38,11 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+<<<<<<< HEAD
   m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+=======
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
+>>>>>>> main
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -200,6 +204,8 @@ MonoBehaviour:
   _handRectsFromPalmDetectionsAnnotationController: {fileID: 841116732}
   _handLandmarksAnnotationController: {fileID: 841116731}
   _handRectsFromLandmarksAnnotationController: {fileID: 841116730}
+  _drawingTool: {fileID: 1116047792}
+  _gestureController: {fileID: 1116047793}
 --- !u!114 &275874970
 MonoBehaviour:
   m_ObjectHideFlags: 0
