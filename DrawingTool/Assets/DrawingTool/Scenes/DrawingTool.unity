@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -961,7 +961,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeDelay: 0.37
-  lineWidth: 0.1
+  lineWidth: 0.37
 --- !u!4 &1075300331
 Transform:
   m_ObjectHideFlags: 0
@@ -1041,7 +1041,6 @@ MonoBehaviour:
   bentThreshold: 20
   thumbBentThreshold: 5
   gesture: 
-  averagePosition: {x: 0, y: 0, z: 0}
 --- !u!1 &1223870913
 GameObject:
   m_ObjectHideFlags: 0
