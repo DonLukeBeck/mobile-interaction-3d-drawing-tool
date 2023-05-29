@@ -69,7 +69,12 @@ public class GestureController : MonoBehaviour
             points[20].transform.localPosition
         };
 
-        averagePosition = points[3].transform.localPosition;
+        for (int i = 0; i < points.Count; i++)
+        {
+            averagePosition += points[i].transform.localPosition;
+        }
+
+        averagePosition /= points.Count;
 
         float thumbAngle = GetAverageAngle(thumbPositions);
         float indexAngle = GetAverageAngle(indexPositions);
