@@ -68,7 +68,7 @@ public class LineDrawerGesture : MonoBehaviour
     Vector3 GetMousePosition()
     {
         if (_drawingTool.GestureControlled)
-            return _drawingTool.AveragePosition[0];
+            return _drawingTool.HandPositions[0];
         
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         return ray.origin + ray.direction * 10;

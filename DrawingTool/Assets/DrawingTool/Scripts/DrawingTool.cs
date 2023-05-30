@@ -14,18 +14,15 @@ public class DrawingTool : HandLandmarkUser
     public bool RenderHandSkeleton = true;
     [SerializeField] private GameObject _pointer;
 
-    public Vector3[] AveragePosition { get; private set; }
+    public Vector3[] HandPositions { get; private set; }
     private HandSkeleton[] _handSkeletons;
-
-    [SerializeField] private int _numSamples = 4;
-    private float[,] _positionSamples;
 
     void Start()
     {
         _pointer = GameObject.Find("Pointer");
-        AveragePosition = new Vector3[DrawingSettings.Instance.MaxNumHands];
-        for (int i = 0; i < AveragePosition.Length; i++)
-            AveragePosition[i] = new Vector3();
+        HandPositions = new Vector3[DrawingSettings.Instance.MaxNumHands];
+        for (int i = 0; i < HandPositions.Length; i++)
+            HandPositions[i] = new Vector3();
 
         _handSkeletons = new HandSkeleton[DrawingSettings.Instance.MaxNumHands];
         for (int i = 0; i < _handSkeletons.Length; i++)
@@ -33,8 +30,6 @@ public class DrawingTool : HandLandmarkUser
             _handSkeletons[i] = new HandSkeleton(HandScale * .2f, HandScale);
             _handSkeletons[i].IsActive = false;
         }
-
-        _positionSamples = new float[DrawingSettings.Instance.MaxNumHands, _numSamples];
     }
 
     public override void ProcessHandLandmark(IList<NormalizedLandmarkList> handLandmarkLists,
@@ -49,18 +44,19 @@ public class DrawingTool : HandLandmarkUser
                 _handSkeletons[i].IsActive = false;
                 continue;
             }
+
             if (RenderHandSkeleton)
                 _handSkeletons[i].IsActive = true;
 
             var landmark = handLandmarkLists[i].Landmark;
-            ref var averagePos = ref AveragePosition[i];
-            GetPalmProperties(landmark, out float size, out averagePos);
+            GetPalmProperties(landmark, out float size, out Vector3 newAvgPos);
             float depth = remap(0, 1, MoveScale, -MoveScale, size);
 
-            averagePos *= MoveScale;
-            averagePos.z += depth;
+            newAvgPos *= MoveScale;
+            newAvgPos.z += depth;
+            HandPositions[i] = HandPositions[i] * 0.9f + newAvgPos * 0.1f;
             
-            if(!RenderHandSkeleton) continue;
+            if (!RenderHandSkeleton) continue;
 
             for (int o = 0; o < landmark.Count; o++)
             {
@@ -72,10 +68,11 @@ public class DrawingTool : HandLandmarkUser
             }
         }
 
-        _pointer.transform.position = AveragePosition[0];
+        _pointer.transform.position = HandPositions[0];
     }
 
-    private readonly int[] _palmIdx = new int[] { 0, 5, 17 };
+    private readonly int[] _palmIdxs = { 0, 5, 17 };
+
     private void GetPalmProperties(RepeatedField<NormalizedLandmark> landmark, out float size,
         out Vector3 averagePosition)
     {
@@ -83,7 +80,7 @@ public class DrawingTool : HandLandmarkUser
         Vector3 _bbMax = new Vector3(int.MinValue, int.MinValue, int.MinValue);
 
         averagePosition = new Vector3();
-        foreach (var idx in _palmIdx)
+        foreach (var idx in _palmIdxs)
         {
             float x = landmark[idx].X;
             float y = landmark[idx].Y * -1;
@@ -92,7 +89,7 @@ public class DrawingTool : HandLandmarkUser
             averagePosition.x += x;
             averagePosition.y += y;
             averagePosition.z += z;
-            
+
             if (_bbMin.x > x) _bbMin.x = x;
             if (_bbMax.x < x) _bbMax.x = x;
             if (_bbMin.y > y) _bbMin.y = y;
@@ -102,11 +99,6 @@ public class DrawingTool : HandLandmarkUser
         }
 
         size = Vector3.Distance(_bbMin, _bbMax);
-        averagePosition /= _palmIdx.Length;
-    }
-
-    private void LowPassFilter()
-    {
-        
+        averagePosition /= _palmIdxs.Length;
     }
 }
