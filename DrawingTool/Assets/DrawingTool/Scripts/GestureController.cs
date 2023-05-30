@@ -1,70 +1,57 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Rendering;
+using Mediapipe;
 
-[System.Serializable]
-public class GestureController : MonoBehaviour
+public class GestureController : HandLandmarkUser
 {
-    [SerializeField]
-    private GameObject handLandmarks;
-
-    private List<GameObject> points = new List<GameObject>();
-
     public float bentThreshold = 20;
     public float thumbBentThreshold = 5;
     public string gesture = "";
 
-
-    private void Start()
+    public override void ProcessHandLandmark(IList<NormalizedLandmarkList> handLandmarkLists, IList<ClassificationList> handedness = null)
     {
-        FillChildren();
-    }
+        if (handLandmarkLists == null || handLandmarkLists.Count == 0) return;
 
-    public void CheckGesture()
-    {
-        if (points.Count == 0)
-        {
-            if (!FillChildren()) return;
-        }
-
+        var hl0 = handLandmarkLists[0].Landmark;
+        
         List<Vector3> thumbPositions = new List<Vector3>()
         {
-            points[1].transform.localPosition,
-            points[2].transform.localPosition,
-            points[3].transform.localPosition,
-            points[4].transform.localPosition
+            new Vector3(hl0[1].X, hl0[1].Y, hl0[1].Z),
+            new Vector3(hl0[2].X, hl0[2].Y, hl0[2].Z),
+            new Vector3(hl0[3].X, hl0[3].Y, hl0[3].Z),
+            new Vector3(hl0[4].X, hl0[4].Y, hl0[4].Z)
         };
 
         List<Vector3> indexPositions = new List<Vector3>()
         {
-            points[5].transform.localPosition,
-            points[6].transform.localPosition,
-            points[7].transform.localPosition,
-            points[8].transform.localPosition
+            new Vector3(hl0[5].X, hl0[5].Y, hl0[5].Z),
+            new Vector3(hl0[6].X, hl0[6].Y, hl0[6].Z),
+            new Vector3(hl0[7].X, hl0[7].Y, hl0[7].Z),
+            new Vector3(hl0[8].X, hl0[8].Y, hl0[8].Z)
         };
 
         List<Vector3> middlePositions = new List<Vector3>()
         {
-            points[9].transform.localPosition,
-            points[10].transform.localPosition,
-            points[11].transform.localPosition,
-            points[12].transform.localPosition
+            new Vector3(hl0[9].X, hl0[9].Y, hl0[9].Z),
+            new Vector3(hl0[10].X, hl0[10].Y, hl0[10].Z),
+            new Vector3(hl0[11].X, hl0[11].Y, hl0[11].Z),
+            new Vector3(hl0[12].X, hl0[12].Y, hl0[12].Z)
         };
 
         List<Vector3> ringPositions = new List<Vector3>()
         {
-            points[13].transform.localPosition,
-            points[14].transform.localPosition,
-            points[15].transform.localPosition,
-            points[16].transform.localPosition
+            new Vector3(hl0[13].X, hl0[13].Y, hl0[13].Z),
+            new Vector3(hl0[14].X, hl0[14].Y, hl0[14].Z),
+            new Vector3(hl0[15].X, hl0[15].Y, hl0[15].Z),
+            new Vector3(hl0[16].X, hl0[16].Y, hl0[16].Z)
         };
 
         List<Vector3> pinkyPositions = new List<Vector3>()
         {
-            points[17].transform.localPosition,
-            points[18].transform.localPosition,
-            points[19].transform.localPosition,
-            points[20].transform.localPosition
+            new Vector3(hl0[17].X, hl0[17].Y, hl0[17].Z),
+            new Vector3(hl0[18].X, hl0[18].Y, hl0[18].Z),
+            new Vector3(hl0[19].X, hl0[19].Y, hl0[19].Z),
+            new Vector3(hl0[20].X, hl0[20].Y, hl0[20].Z)
         };
 
         float thumbAngle = GetAverageAngle(thumbPositions);
@@ -78,7 +65,6 @@ public class GestureController : MonoBehaviour
         bool middleBent = middleAngle > bentThreshold;
         bool ringBent = ringAngle > bentThreshold;
         bool pinkyBent = pinkyAngle > bentThreshold;
-
         
         gesture = GetGesture(thumbBent, indexBent, middleBent, ringBent, pinkyBent);
     }
@@ -90,17 +76,7 @@ public class GestureController : MonoBehaviour
         if (ring && pinky) return "peace";
         return "open";
     }
-
-    private bool FillChildren()
-    {
-        if (handLandmarks.transform.childCount == 0) return false;
-        foreach (Transform child in handLandmarks.transform.GetChild(0).GetChild(0).transform)
-        {
-            points.Add(child.gameObject);
-        }
-        return true;
-    }
-
+    
     private float GetAverageAngle(List<Vector3> positions)
     {
         float sum = 0;

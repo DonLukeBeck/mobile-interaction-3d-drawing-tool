@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LineDrawer : MonoBehaviour
+public class LineDrawerGesture : MonoBehaviour
 {
     List<Vector3> linePoints;
     float timer;
@@ -13,20 +13,20 @@ public class LineDrawer : MonoBehaviour
     public float lineWidth;
     GestureController gestureController;
     DrawingTool drawingTool;
+    
     // Start is called before the first frame update
     void Start()
     {
         linePoints = new List<Vector3>();
         timer = timeDelay;
-        gestureController = GameObject.Find("DrawingManager").GetComponent<GestureController>();
-        drawingTool = GameObject.Find("DrawingManager").GetComponent<DrawingTool>();
+        gestureController = GameObject.Find("Manager").GetComponent<GestureController>();
+        drawingTool = GameObject.Find("Manager").GetComponent<DrawingTool>();
     }
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButtonDown(0) || (gestureController.gesture == "fist" && drawingTool.gestureControlled))
-
         {
             newLine = new GameObject();
             newLine.transform.parent = this.transform;
