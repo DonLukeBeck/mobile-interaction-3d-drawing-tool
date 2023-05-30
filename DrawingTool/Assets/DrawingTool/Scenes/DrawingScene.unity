@@ -478,7 +478,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &567480140
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1107,7 +1107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeDelay: 0.37
-  LineWidth: 0.37
+  LineWidth: 0.1
 --- !u!1 &1116047789
 GameObject:
   m_ObjectHideFlags: 0
@@ -1155,9 +1155,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HandScale: 10
-  MoveScale: 100
+  MoveScale: 10
   GestureControlled: 1
-  RenderHandSkeleton: 1
+  RenderHandSkeleton: 0
   _pointer: {fileID: 0}
 --- !u!114 &1116047793
 MonoBehaviour:

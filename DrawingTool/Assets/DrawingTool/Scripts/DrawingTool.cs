@@ -17,6 +17,9 @@ public class DrawingTool : HandLandmarkUser
     public Vector3[] AveragePosition { get; private set; }
     private HandSkeleton[] _handSkeletons;
 
+    [SerializeField] private int _numSamples = 4;
+    private float[,] _positionSamples;
+
     void Start()
     {
         _pointer = GameObject.Find("Pointer");
@@ -27,9 +30,11 @@ public class DrawingTool : HandLandmarkUser
         _handSkeletons = new HandSkeleton[DrawingSettings.Instance.MaxNumHands];
         for (int i = 0; i < _handSkeletons.Length; i++)
         {
-            _handSkeletons[i] = new HandSkeleton(HandScale * .2f, HandScale * .2f);
+            _handSkeletons[i] = new HandSkeleton(HandScale * .2f, HandScale);
             _handSkeletons[i].IsActive = false;
         }
+
+        _positionSamples = new float[DrawingSettings.Instance.MaxNumHands, _numSamples];
     }
 
     public override void ProcessHandLandmark(IList<NormalizedLandmarkList> handLandmarkLists,
@@ -55,6 +60,8 @@ public class DrawingTool : HandLandmarkUser
             averagePos *= MoveScale;
             averagePos.z += depth;
             
+            if(!RenderHandSkeleton) continue;
+
             for (int o = 0; o < landmark.Count; o++)
             {
                 float x = landmark[o].X * MoveScale;
@@ -72,8 +79,8 @@ public class DrawingTool : HandLandmarkUser
     private void GetPalmProperties(RepeatedField<NormalizedLandmark> landmark, out float size,
         out Vector3 averagePosition)
     {
-        Vector3 _bbMin = new Vector3(int.MinValue, int.MinValue, int.MinValue);
-        Vector3 _bbMax = new Vector3(int.MaxValue, int.MaxValue, int.MaxValue);
+        Vector3 _bbMin = new Vector3(int.MaxValue, int.MaxValue, int.MaxValue);
+        Vector3 _bbMax = new Vector3(int.MinValue, int.MinValue, int.MinValue);
 
         averagePosition = new Vector3();
         foreach (var idx in _palmIdx)
@@ -86,15 +93,20 @@ public class DrawingTool : HandLandmarkUser
             averagePosition.y += y;
             averagePosition.z += z;
             
-            if (_bbMin.x < x) _bbMin.x = x;
-            if (_bbMax.x > x) _bbMax.x = x;
-            if (_bbMin.y < y) _bbMin.y = y;
-            if (_bbMax.y > y) _bbMax.y = y;
-            if (_bbMin.z < z) _bbMin.z = z;
-            if (_bbMax.z > z) _bbMax.z = z;
+            if (_bbMin.x > x) _bbMin.x = x;
+            if (_bbMax.x < x) _bbMax.x = x;
+            if (_bbMin.y > y) _bbMin.y = y;
+            if (_bbMax.y < y) _bbMax.y = y;
+            if (_bbMin.z > z) _bbMin.z = z;
+            if (_bbMax.z < z) _bbMax.z = z;
         }
 
         size = Vector3.Distance(_bbMin, _bbMax);
         averagePosition /= _palmIdx.Length;
+    }
+
+    private void LowPassFilter()
+    {
+        
     }
 }
