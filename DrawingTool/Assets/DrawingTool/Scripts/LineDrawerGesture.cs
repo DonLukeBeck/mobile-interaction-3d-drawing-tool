@@ -14,14 +14,14 @@ public class LineDrawerGesture : MonoBehaviour
     public float LineWidth;
     GestureController _gestureController;
     DrawingTool _drawingTool;
-    
+
     // Start is called before the first frame update
     void Start()
     {
         _linePoints = new List<Vector3>();
         _timer = timeDelay;
-        _gestureController = GameObject.Find("Manager").GetComponent<GestureController>();
-        _drawingTool = GameObject.Find("Manager").GetComponent<DrawingTool>();
+        _gestureController = GameObject.Find("DrawingManager").GetComponent<GestureController>();
+        _drawingTool = GameObject.Find("DrawingManager").GetComponent<DrawingTool>();
     }
 
     // Update is called once per frame
@@ -40,11 +40,11 @@ public class LineDrawerGesture : MonoBehaviour
             _drawLine.endColor = Color.black;
         }
 
-        if (Input.GetMouseButton(0) || (_gestureController.gesture == "fist" && _drawingTool.GestureControlled)) { 
-
-            Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red); 
+        if (Input.GetMouseButton(0) || (_gestureController.gesture == "fist" && _drawingTool.GestureControlled))
+        {
+            Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red);
             _timer -= Time.deltaTime;
-            if(_timer <= 0)
+            if (_timer <= 0)
             {
                 _linePoints.Add(GetMousePosition());
                 _drawLine.positionCount = _linePoints.Count;
@@ -53,30 +53,31 @@ public class LineDrawerGesture : MonoBehaviour
             }
         }
 
-        if(Input.GetMouseButtonUp(0) && (_gestureController.gesture != "fist" && _drawingTool.GestureControlled))
+        if (Input.GetMouseButtonUp(0) || (_gestureController.gesture != "fist" && _drawingTool.GestureControlled))
         {
-            foreach(Vector3 point in _linePoints)
+            foreach (Vector3 point in _linePoints)
             {
                 Debug.Log(point);
             }
+
             GenerateMeshCollider();
             _linePoints.Clear();
         }
-
     }
-        
-    Vector3 GetMousePosition() 
+
+    Vector3 GetMousePosition()
     {
         if (_drawingTool.GestureControlled)
             return _drawingTool.AveragePosition[0];
-        else { 
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            return ray.origin + ray.direction * 10;
-        }
+        
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        return ray.origin + ray.direction * 10;
     }
 
     public void GenerateMeshCollider()
     {
+        if (_drawLine == null) return;
+        
         _drawLine.useWorldSpace = false;
         MeshCollider collider = GetComponent<MeshCollider>();
 

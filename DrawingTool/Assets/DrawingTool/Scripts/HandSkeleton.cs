@@ -10,18 +10,15 @@ public class HandSkeleton : MonoBehaviour
         set
         {
             _isActive = value;
-            if (value)
-                _hand.transform.localPosition = new Vector3(0, 0);
-            else if (!value)
-                _hand.transform.localPosition = new Vector3(99999, 99999);
+            _hand.transform.localPosition = value ? new Vector3(0, 0) : new Vector3(99999, 99999);
         }
     }
 
-    private GameObject _hand;
+    private readonly GameObject _hand;
     private GameObject[] _bones;
     private bool _isActive;
 
-    public HandSkeleton()
+    public HandSkeleton(float jointScale = 1f, float boneWidth = 1f)
     {
         Joints = new GameObject[DrawingSettings.Instance.HandDescriptor.Count];
         _bones = new GameObject[DrawingSettings.Instance.HandDescriptor.Count];
@@ -31,6 +28,7 @@ public class HandSkeleton : MonoBehaviour
         {
             Joints[i] = Instantiate(Resources.Load<GameObject>("Prefabs/Sphere"), _hand.transform);
             Joints[i].name = i.ToString();
+            Joints[i].transform.localScale = new Vector3(jointScale, jointScale, jointScale);
         }
 
         for (int i = 0; i < DrawingSettings.Instance.HandDescriptor.Count; i++)
@@ -41,7 +39,8 @@ public class HandSkeleton : MonoBehaviour
             int destIdx = DrawingSettings.Instance.HandDescriptor[i].Item2;
             jc.origin = Joints[originIdx].transform;
             jc.destination = Joints[destIdx].transform;
-            _bones[i].name = "Bone " + originIdx.ToString() + "-" + destIdx.ToString();
+            jc.SetWidth(boneWidth);
+            _bones[i].name = "Bone " + originIdx + "-" + destIdx;
         }
     }
 }
