@@ -1,12 +1,34 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using Mediapipe;
 
 public class GestureController : HandLandmarkUser
 {
+    public static class Gestures
+    {
+        public static readonly string Open = "Open";
+        public static readonly string Fist = "Fist";
+        public static readonly string ThumbsUp = "ThumbsUp";
+        public static readonly string Peace = "Peace";
+    }
+    
     public float bentThreshold = 20;
     public float thumbBentThreshold = 5;
     public string gesture = "";
+    
+    private Dictionary<string, Sprite> GestureIcons;
+    [SerializeField] private SpriteRenderer _pointer;
+
+    private void Start()
+    {
+        _pointer = GameObject.Find("Pointer").GetComponent<SpriteRenderer>();
+        GestureIcons = new();
+        GestureIcons.Add(Gestures.Open, Resources.Load<Sprite>("Sprites/hand_icon"));
+        GestureIcons.Add(Gestures.Fist, Resources.Load<Sprite>("Sprites/draw_icon"));
+        GestureIcons.Add(Gestures.ThumbsUp, Resources.Load<Sprite>("Sprites/draw_icon"));
+        GestureIcons.Add(Gestures.Peace, Resources.Load<Sprite>("Sprites/draw_icon"));
+    }
 
     public override void ProcessHandLandmark(IList<NormalizedLandmarkList> handLandmarkLists, IList<ClassificationList> handedness = null)
     {
@@ -66,15 +88,18 @@ public class GestureController : HandLandmarkUser
         bool ringBent = ringAngle > bentThreshold;
         bool pinkyBent = pinkyAngle > bentThreshold;
         
+        string previousGesture = gesture;
         gesture = GetGesture(thumbBent, indexBent, middleBent, ringBent, pinkyBent);
+        if (previousGesture != gesture)
+            _pointer.sprite = GestureIcons[gesture];
     }
 
     private string GetGesture(bool thumb, bool index, bool middle, bool ring, bool pinky)
     {
-        if (thumb && index && middle && ring && pinky) return "fist";
-        if (index && middle && ring && pinky) return "thumbsup";
-        if (ring && pinky) return "peace";
-        return "open";
+        if (thumb && index && middle && ring && pinky) return Gestures.Fist;
+        if (index && middle && ring && pinky) return Gestures.ThumbsUp;
+        if (ring && pinky) return Gestures.Peace;
+        return Gestures.Open;
     }
     
     private float GetAverageAngle(List<Vector3> positions)

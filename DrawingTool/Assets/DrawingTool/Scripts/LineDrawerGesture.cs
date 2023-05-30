@@ -20,14 +20,14 @@ public class LineDrawerGesture : MonoBehaviour
     {
         _linePoints = new List<Vector3>();
         _timer = timeDelay;
-        _gestureController = GameObject.Find("DrawingManager").GetComponent<GestureController>();
-        _drawingTool = GameObject.Find("DrawingManager").GetComponent<DrawingTool>();
+        _gestureController = GameObject.Find("Manager").GetComponent<GestureController>();
+        _drawingTool = GameObject.Find("Manager").GetComponent<DrawingTool>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) || (_gestureController.gesture == "fist" && _drawingTool.GestureControlled))
+        if (Input.GetMouseButtonDown(0) || (_gestureController.gesture == GestureController.Gestures.Fist && _drawingTool.GestureControlled))
         {
             _newLine = new GameObject();
             _newLine.transform.parent = this.transform;
@@ -40,7 +40,7 @@ public class LineDrawerGesture : MonoBehaviour
             _drawLine.endColor = Color.black;
         }
 
-        if (Input.GetMouseButton(0) || (_gestureController.gesture == "fist" && _drawingTool.GestureControlled))
+        if (Input.GetMouseButton(0) || (_gestureController.gesture == GestureController.Gestures.Fist && _drawingTool.GestureControlled))
         {
             Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red);
             _timer -= Time.deltaTime;
@@ -53,7 +53,7 @@ public class LineDrawerGesture : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonUp(0) || (_gestureController.gesture != "fist" && _drawingTool.GestureControlled))
+        if (Input.GetMouseButtonUp(0) || (_gestureController.gesture != GestureController.Gestures.Fist && _drawingTool.GestureControlled))
         {
             foreach (Vector3 point in _linePoints)
             {

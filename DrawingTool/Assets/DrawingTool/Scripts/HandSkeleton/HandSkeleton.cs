@@ -10,13 +10,14 @@ public class HandSkeleton : MonoBehaviour
         set
         {
             _isActive = value;
-            _hand.transform.localPosition = value ? new Vector3(0, 0) : new Vector3(99999, 99999);
+            _hand.transform.localScale = value ? _jointScale : new Vector3(0, 0, 0);
         }
     }
 
     private readonly GameObject _hand;
     private GameObject[] _bones;
     private bool _isActive;
+    private readonly Vector3 _jointScale;
 
     public HandSkeleton(float jointScale = 1f, float boneWidth = 1f)
     {
@@ -28,7 +29,8 @@ public class HandSkeleton : MonoBehaviour
         {
             Joints[i] = Instantiate(Resources.Load<GameObject>("Prefabs/Sphere"), _hand.transform);
             Joints[i].name = i.ToString();
-            Joints[i].transform.localScale = new Vector3(jointScale, jointScale, jointScale);
+            _jointScale = new Vector3(jointScale, jointScale, jointScale);
+            Joints[i].transform.localScale = _jointScale;
         }
 
         for (int i = 0; i < DrawingSettings.Instance.HandDescriptor.Count; i++)
