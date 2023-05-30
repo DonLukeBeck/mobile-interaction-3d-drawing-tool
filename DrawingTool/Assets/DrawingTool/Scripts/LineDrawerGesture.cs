@@ -1,73 +1,74 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class LineDrawerGesture : MonoBehaviour
 {
-    List<Vector3> linePoints;
-    float timer;
+    private List<Vector3> _linePoints;
+    private float _timer;
     public float timeDelay;
 
-    GameObject newLine;
-    LineRenderer drawLine;
-    public float lineWidth;
-    GestureController gestureController;
-    DrawingTool drawingTool;
+    GameObject _newLine;
+    LineRenderer _drawLine;
+    public float LineWidth;
+    GestureController _gestureController;
+    DrawingTool _drawingTool;
     
     // Start is called before the first frame update
     void Start()
     {
-        linePoints = new List<Vector3>();
-        timer = timeDelay;
-        gestureController = GameObject.Find("Manager").GetComponent<GestureController>();
-        drawingTool = GameObject.Find("Manager").GetComponent<DrawingTool>();
+        _linePoints = new List<Vector3>();
+        _timer = timeDelay;
+        _gestureController = GameObject.Find("Manager").GetComponent<GestureController>();
+        _drawingTool = GameObject.Find("Manager").GetComponent<DrawingTool>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) || (gestureController.gesture == "fist" && drawingTool.gestureControlled))
+        if (Input.GetMouseButtonDown(0) || (_gestureController.gesture == "fist" && _drawingTool.GestureControlled))
         {
-            newLine = new GameObject();
-            newLine.transform.parent = this.transform;
-            drawLine = newLine.AddComponent<LineRenderer>();
+            _newLine = new GameObject();
+            _newLine.transform.parent = this.transform;
+            _drawLine = _newLine.AddComponent<LineRenderer>();
 
-            drawLine.material = new Material(Shader.Find("Sprites/Default"));
-            drawLine.startWidth = lineWidth;
-            drawLine.endWidth = lineWidth;
-            drawLine.startColor = Color.black;
-            drawLine.endColor = Color.black;
+            _drawLine.material = new Material(Shader.Find("Sprites/Default"));
+            _drawLine.startWidth = LineWidth;
+            _drawLine.endWidth = LineWidth;
+            _drawLine.startColor = Color.black;
+            _drawLine.endColor = Color.black;
         }
 
-        if (Input.GetMouseButton(0) || (gestureController.gesture == "fist" && drawingTool.gestureControlled)) { 
+        if (Input.GetMouseButton(0) || (_gestureController.gesture == "fist" && _drawingTool.GestureControlled)) { 
 
             Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red); 
-            timer -= Time.deltaTime;
-            if(timer <= 0)
+            _timer -= Time.deltaTime;
+            if(_timer <= 0)
             {
-                linePoints.Add(GetMousePosition());
-                drawLine.positionCount = linePoints.Count;
-                drawLine.SetPositions(linePoints.ToArray());
-                timer = timeDelay;
+                _linePoints.Add(GetMousePosition());
+                _drawLine.positionCount = _linePoints.Count;
+                _drawLine.SetPositions(_linePoints.ToArray());
+                _timer = timeDelay;
             }
         }
 
-        if(Input.GetMouseButtonUp(0) && (gestureController.gesture != "fist" && drawingTool.gestureControlled))
+        if(Input.GetMouseButtonUp(0) && (_gestureController.gesture != "fist" && _drawingTool.GestureControlled))
         {
-            foreach(Vector3 point in linePoints)
+            foreach(Vector3 point in _linePoints)
             {
                 Debug.Log(point);
             }
             GenerateMeshCollider();
-            linePoints.Clear();
+            _linePoints.Clear();
         }
 
     }
         
     Vector3 GetMousePosition() 
     {
-        if (drawingTool.gestureControlled)
-            return drawingTool.averagePosition;
+        if (_drawingTool.GestureControlled)
+            return _drawingTool.AveragePosition[0];
         else { 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             return ray.origin + ray.direction * 10;
@@ -76,7 +77,7 @@ public class LineDrawerGesture : MonoBehaviour
 
     public void GenerateMeshCollider()
     {
-        drawLine.useWorldSpace = false;
+        _drawLine.useWorldSpace = false;
         MeshCollider collider = GetComponent<MeshCollider>();
 
         if (collider == null)
@@ -85,7 +86,7 @@ public class LineDrawerGesture : MonoBehaviour
         }
 
         Mesh mesh = new Mesh();
-        drawLine.BakeMesh(mesh, true);
+        _drawLine.BakeMesh(mesh, true);
         collider.sharedMesh = mesh;
     }
 }

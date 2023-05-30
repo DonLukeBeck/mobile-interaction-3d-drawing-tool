@@ -2,17 +2,31 @@ using UnityEngine;
 
 public class HandSkeleton : MonoBehaviour
 {
-    public GameObject[] Joints { get; private set; }
-    
+    public GameObject[] Joints { get; }
+
+    public bool IsActive
+    {
+        get => _isActive;
+        set
+        {
+            _isActive = value;
+            if (value)
+                _hand.transform.localPosition = new Vector3(0, 0);
+            else if (!value)
+                _hand.transform.localPosition = new Vector3(99999, 99999);
+        }
+    }
+
     private GameObject _hand;
     private GameObject[] _bones;
+    private bool _isActive;
 
     public HandSkeleton()
     {
         Joints = new GameObject[DrawingSettings.Instance.HandDescriptor.Count];
         _bones = new GameObject[DrawingSettings.Instance.HandDescriptor.Count];
         _hand = new GameObject("Hand");
-        
+
         for (int i = 0; i < DrawingSettings.Instance.HandDescriptor.Count; i++)
         {
             Joints[i] = Instantiate(Resources.Load<GameObject>("Prefabs/Sphere"), _hand.transform);

@@ -178,7 +178,7 @@ MonoBehaviour:
   _openGlEsConfig: {fileID: 4900000, guid: 155e81a0de3136db88c8ac8c72fad8b7, type: 3}
   _timeoutMicrosec: 5000
   modelComplexity: 1
-  maxNumHands: 1
+  maxNumHands: 2
 --- !u!114 &275874969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -985,7 +985,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeDelay: 0.37
-  lineWidth: 0.37
+  LineWidth: 0.37
 --- !u!1 &1116047789
 GameObject:
   m_ObjectHideFlags: 0
@@ -1032,9 +1032,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72139a979c7fb384d8d9190d03650591, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handScale: 10
-  gestureControlled: 1
-  averagePosition: {x: 0, y: 0, z: 0}
+  HandScale: 10
+  GestureControlled: 0
 --- !u!114 &1116047793
 MonoBehaviour:
   m_ObjectHideFlags: 0
