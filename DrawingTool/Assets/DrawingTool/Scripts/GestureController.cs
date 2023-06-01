@@ -17,6 +17,9 @@ public class GestureController : HandLandmarkUser
     public float thumbBentThreshold = 5;
     public string gesture = "";
     
+    private float previousSwitchTime;
+    [SerializeField] private float gestureSwitchDelay;
+
     private Dictionary<string, Sprite> GestureIcons;
     [SerializeField] private SpriteRenderer _pointer;
 
@@ -28,6 +31,7 @@ public class GestureController : HandLandmarkUser
         GestureIcons.Add(Gestures.Fist, Resources.Load<Sprite>("Sprites/draw_icon"));
         GestureIcons.Add(Gestures.ThumbsUp, Resources.Load<Sprite>("Sprites/draw_icon"));
         GestureIcons.Add(Gestures.Peace, Resources.Load<Sprite>("Sprites/draw_icon"));
+        previousSwitchTime = Time.fixedTime;
     }
 
     public override void ProcessHandLandmark(IList<NormalizedLandmarkList> handLandmarkLists, IList<ClassificationList> handedness = null)
@@ -89,9 +93,12 @@ public class GestureController : HandLandmarkUser
         bool pinkyBent = pinkyAngle > bentThreshold;
         
         string previousGesture = gesture;
-        gesture = GetGesture(thumbBent, indexBent, middleBent, ringBent, pinkyBent);
-        if (previousGesture != gesture)
+        string currGesture = GetGesture(thumbBent, indexBent, middleBent, ringBent, pinkyBent);
+        if (previousGesture != currGesture && Time.fixedTime - previousSwitchTime > gestureSwitchDelay) {
+            previousSwitchTime = Time.fixedTime;
+            gesture = currGesture;
             _pointer.sprite = GestureIcons[gesture];
+        }
     }
 
     private string GetGesture(bool thumb, bool index, bool middle, bool ring, bool pinky)
