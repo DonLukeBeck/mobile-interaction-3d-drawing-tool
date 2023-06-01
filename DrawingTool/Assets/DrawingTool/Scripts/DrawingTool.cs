@@ -4,12 +4,14 @@ using System.Drawing;
 using Google.Protobuf.Collections;
 using Mediapipe;
 using UnityEngine;
+using UnityEngine.Serialization;
 using static Unity.Mathematics.math;
 
 public class DrawingTool : HandLandmarkUser
 {
     public float HandScale = 10;
     public float MoveScale = 100;
+    public float SampleAlpha = 0.5f;
     public bool GestureControlled = true;
     public bool RenderHandSkeleton = true;
     [SerializeField] private GameObject _pointer;
@@ -55,9 +57,7 @@ public class DrawingTool : HandLandmarkUser
 
             newAvgPos *= MoveScale;
             newAvgPos.z += depth;
-            SimpleLowPassFilter(ref HandPositions[i], ref newAvgPos, 0.9f);
-            //SinglePoleLowPassFilter(ref HandPositions[i], ref newAvgPos, 0.99f);
-            // HandPositions[i] = HandPositions[i] * 0.9f + newAvgPos * 0.1f;
+            LowPassFilter(ref HandPositions[i], ref newAvgPos, SampleAlpha);
 
             if (!RenderHandSkeleton) continue;
 
@@ -105,13 +105,15 @@ public class DrawingTool : HandLandmarkUser
         averagePosition /= _palmIdxs.Length;
     }
 
-    private void SinglePoleLowPassFilter(ref Vector3 output, ref Vector3 input, float alpha)
+    // https://dobrian.github.io/cmp/topics/filters/lowpassfilter.html
+    // https://stackoverflow.com/questions/4272033/how-to-implement-a-lowpass-filter
+    private void LowPassFilter(ref Vector3 output, ref Vector3 input, float alpha)
     {
-        output += alpha * (input - output);
+        output = alpha * output + (1 - alpha) * input;
     }
-
-    private void SimpleLowPassFilter(ref Vector3 output, ref Vector3 input, float alpha)
-    {
-        output = output * alpha + input * (1 - alpha);
-    }
+    
+    // private void HighPassFilter(ref Vector3 output, ref Vector3 input, float alpha)
+    // {
+    //     output = alpha * output - (1 - alpha) * input;
+    // }
 }
