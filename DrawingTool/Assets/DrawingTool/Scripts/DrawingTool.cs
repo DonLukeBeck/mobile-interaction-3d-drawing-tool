@@ -20,9 +20,10 @@ public class DrawingTool : HandLandmarkUser
     void Start()
     {
         _pointer = GameObject.Find("Pointer");
+
         HandPositions = new Vector3[DrawingSettings.Instance.MaxNumHands];
         for (int i = 0; i < HandPositions.Length; i++)
-            HandPositions[i] = new Vector3();
+            HandPositions[i] = _pointer.transform.position;
 
         _handSkeletons = new HandSkeleton[DrawingSettings.Instance.MaxNumHands];
         for (int i = 0; i < _handSkeletons.Length; i++)
@@ -54,8 +55,10 @@ public class DrawingTool : HandLandmarkUser
 
             newAvgPos *= MoveScale;
             newAvgPos.z += depth;
-            HandPositions[i] = HandPositions[i] * 0.9f + newAvgPos * 0.1f;
-            
+            SimpleLowPassFilter(ref HandPositions[i], ref newAvgPos, 0.9f);
+            //SinglePoleLowPassFilter(ref HandPositions[i], ref newAvgPos, 0.99f);
+            // HandPositions[i] = HandPositions[i] * 0.9f + newAvgPos * 0.1f;
+
             if (!RenderHandSkeleton) continue;
 
             for (int o = 0; o < landmark.Count; o++)
@@ -100,5 +103,15 @@ public class DrawingTool : HandLandmarkUser
 
         size = Vector3.Distance(_bbMin, _bbMax);
         averagePosition /= _palmIdxs.Length;
+    }
+
+    private void SinglePoleLowPassFilter(ref Vector3 output, ref Vector3 input, float alpha)
+    {
+        output += alpha * (input - output);
+    }
+
+    private void SimpleLowPassFilter(ref Vector3 output, ref Vector3 input, float alpha)
+    {
+        output = output * alpha + input * (1 - alpha);
     }
 }
