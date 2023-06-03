@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class LineDrawerGesture : MonoBehaviour
+public class BrushController : MonoBehaviour
 {
     private List<Vector3> _linePoints;
     private float _timer;

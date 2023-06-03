@@ -9,15 +9,18 @@ using static Unity.Mathematics.math;
 
 public class HandController : HandLandmarkUser
 {
+    [Header("General")]
+    [SerializeField] private GameObject _pointer;
+    public bool GestureControlled = true;
+    public bool RenderHandSkeleton = true;
+    [Header("Position Based")]
     public float HandScale = 10;
     public float MoveScale = 10;
     public float SampleAlpha = 0.5f;
+    [Header("Velocity Based")]
     public bool UseVelocity = false;
     public float VelocityScale = 1;
     public float VelocitySampleAlpha = 0.5f;
-    public bool GestureControlled = true;
-    public bool RenderHandSkeleton = true;
-    [SerializeField] private GameObject _pointer;
 
     public Vector3[] HandPositions { get; private set; }
     public float[] HandDepths { get; private set; }
