@@ -1,10 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class BrushController : MonoBehaviour
 {
+    [SerializeField] private Transform _pointer;
     private List<Vector3> _linePoints;
     private float _timer;
     public float timeDelay;
@@ -14,7 +13,6 @@ public class BrushController : MonoBehaviour
     public float LineWidth;
     GestureController _gestureController;
     HandController _handController;
-    [SerializeField] private Transform _pointer;
 
     // Start is called before the first frame update
     void Start()

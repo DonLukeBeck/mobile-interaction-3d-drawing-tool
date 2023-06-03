@@ -10,7 +10,7 @@ using static Unity.Mathematics.math;
 public class HandController : HandLandmarkUser
 {
     [Header("General")]
-    [SerializeField] private GameObject _pointer;
+    [SerializeField] private Transform _pointer;
     public bool GestureControlled = true;
     public bool RenderHandSkeleton = true;
     [Header("Position Based")]
@@ -30,7 +30,7 @@ public class HandController : HandLandmarkUser
 
     void Start()
     {
-        _pointer = GameObject.Find("Pointer");
+        _pointer = GameObject.Find("Pointer").transform;
 
         HandPositions = new Vector3[DrawingSettings.Instance.MaxNumHands];
         _prevHandPositions = new Vector3[DrawingSettings.Instance.MaxNumHands];
@@ -38,7 +38,7 @@ public class HandController : HandLandmarkUser
         HandDepths = new float[DrawingSettings.Instance.MaxNumHands];
         for (int i = 0; i < HandPositions.Length; i++)
         {
-            HandPositions[i] = _pointer.transform.position;
+            HandPositions[i] = _pointer.position;
         }
 
         _handSkeletons = new HandSkeleton[DrawingSettings.Instance.MaxNumHands];
@@ -54,20 +54,17 @@ public class HandController : HandLandmarkUser
         for (int i = 0; i < _handSkeletons.Length; i++)
         {
             _prevHandPositions[i] = HandPositions[i];
-            if (UseVelocity)
-                HandPositions[i].LowPassFilter(_newHandPositions[i], VelocitySampleAlpha);
-            else
-                HandPositions[i].LowPassFilter(_newHandPositions[i], SampleAlpha);
+            HandPositions[i].LowPassFilter(_newHandPositions[i], UseVelocity ? VelocitySampleAlpha : SampleAlpha);
         }
 
         if (UseVelocity)
         {
             Vector3 velocity = ((HandPositions[0] - _prevHandPositions[0]) / Time.deltaTime);
-            _pointer.transform.position += velocity * VelocityScale;
+            _pointer.position += velocity * VelocityScale;
         }
         else
         {
-            _pointer.transform.position = HandPositions[0] * MoveScale;
+            _pointer.position = HandPositions[0] * MoveScale;
         }
     }
 

@@ -1073,7 +1073,7 @@ GameObject:
   - component: {fileID: 1075300331}
   - component: {fileID: 1075300332}
   m_Layer: 0
-  m_Name: LineTracer
+  m_Name: (Moved To Manager)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1101,14 +1101,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1075300329}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ff34a32fe19e944eb9d7326e70e69e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _pointer: {fileID: 1373981495}
   timeDelay: 0
   LineWidth: 0.1
-  _pointer: {fileID: 1373981495}
 --- !u!1 &1116047789
 GameObject:
   m_ObjectHideFlags: 0
@@ -1121,6 +1121,7 @@ GameObject:
   - component: {fileID: 1116047794}
   - component: {fileID: 1116047792}
   - component: {fileID: 1116047793}
+  - component: {fileID: 1116047796}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -1155,15 +1156,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72139a979c7fb384d8d9190d03650591, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _pointer: {fileID: 1373981493}
+  GestureControlled: 1
+  RenderHandSkeleton: 0
   HandScale: 10
   MoveScale: 10
   SampleAlpha: 0.5
   UseVelocity: 1
   VelocityScale: 0.5
   VelocitySampleAlpha: 0.8
-  GestureControlled: 1
-  RenderHandSkeleton: 0
-  _pointer: {fileID: 1373981493}
 --- !u!114 &1116047793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1176,11 +1177,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54eb1d2b668bbed43ad8c5c11035021d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _pointer: {fileID: 1373981494}
   bentThreshold: 20
   thumbBentThreshold: 5
   gesture: 
   gestureSwitchDelay: 0.1
-  _pointer: {fileID: 1373981494}
 --- !u!114 &1116047794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1193,6 +1194,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5add7340aca74714baea282980f774e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1116047796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1116047789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ff34a32fe19e944eb9d7326e70e69e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _pointer: {fileID: 1373981495}
+  timeDelay: 0
+  LineWidth: 0.1
 --- !u!1 &1223870913
 GameObject:
   m_ObjectHideFlags: 0
@@ -1323,7 +1339,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -1450,8 +1466,8 @@ Transform:
   m_GameObject: {fileID: 1373981493}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8

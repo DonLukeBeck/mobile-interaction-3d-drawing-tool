@@ -13,6 +13,7 @@ public class GestureController : HandLandmarkUser
         public static readonly string Peace = "Peace";
     }
     
+    [SerializeField] private SpriteRenderer _pointer;
     public float bentThreshold = 20;
     public float thumbBentThreshold = 5;
     public string gesture = "";
@@ -21,7 +22,6 @@ public class GestureController : HandLandmarkUser
     [SerializeField] private float gestureSwitchDelay;
 
     private Dictionary<string, Sprite> GestureIcons;
-    [SerializeField] private SpriteRenderer _pointer;
 
     private Vector3[] _thumbPositions = new Vector3[4];
     private Vector3[] _indexPositions = new Vector3[4];
