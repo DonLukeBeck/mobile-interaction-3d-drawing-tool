@@ -23,6 +23,7 @@ public class LineDrawerGesture : MonoBehaviour
         _timer = timeDelay;
         _gestureController = GameObject.Find("Manager").GetComponent<GestureController>();
         _handController = GameObject.Find("Manager").GetComponent<HandController>();
+        _pointer = GameObject.Find("Pointer").transform;
     }
 
     // Update is called once per frame
