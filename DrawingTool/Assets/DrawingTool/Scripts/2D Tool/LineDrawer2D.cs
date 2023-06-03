@@ -12,7 +12,7 @@ public class LineDrawer2D : MonoBehaviour
     LineRenderer drawLine;
     public float lineWidth;
     GestureController gestureController;
-    DrawingTool drawingTool;
+    HandController _handController;
     // Start is called before the first frame update
     void Start()
     {

@@ -13,7 +13,8 @@ public class LineDrawerGesture : MonoBehaviour
     LineRenderer _drawLine;
     public float LineWidth;
     GestureController _gestureController;
-    DrawingTool _drawingTool;
+    HandController _handController;
+    [SerializeField] private Transform _pointer;
 
     // Start is called before the first frame update
     void Start()
@@ -21,13 +22,13 @@ public class LineDrawerGesture : MonoBehaviour
         _linePoints = new List<Vector3>();
         _timer = timeDelay;
         _gestureController = GameObject.Find("Manager").GetComponent<GestureController>();
-        _drawingTool = GameObject.Find("Manager").GetComponent<DrawingTool>();
+        _handController = GameObject.Find("Manager").GetComponent<HandController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) || (_gestureController.gesture == GestureController.Gestures.Fist && _drawingTool.GestureControlled))
+        if (Input.GetMouseButtonDown(0) || (_gestureController.gesture == GestureController.Gestures.Fist && _handController.GestureControlled))
         {
             _newLine = new GameObject();
             _newLine.transform.parent = this.transform;
@@ -40,7 +41,7 @@ public class LineDrawerGesture : MonoBehaviour
             _drawLine.endColor = Color.black;
         }
 
-        if (Input.GetMouseButton(0) || (_gestureController.gesture == GestureController.Gestures.Fist && _drawingTool.GestureControlled))
+        if (Input.GetMouseButton(0) || (_gestureController.gesture == GestureController.Gestures.Fist && _handController.GestureControlled))
         {
             Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red);
             _timer -= Time.deltaTime;
@@ -53,7 +54,7 @@ public class LineDrawerGesture : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonUp(0) || (_gestureController.gesture != GestureController.Gestures.Fist && _drawingTool.GestureControlled))
+        if (Input.GetMouseButtonUp(0) || (_gestureController.gesture != GestureController.Gestures.Fist && _handController.GestureControlled))
         {
             foreach (Vector3 point in _linePoints)
             {
@@ -67,8 +68,8 @@ public class LineDrawerGesture : MonoBehaviour
 
     Vector3 GetMousePosition()
     {
-        if (_drawingTool.GestureControlled)
-            return _drawingTool.HandPositions[0];
+        if (_handController.GestureControlled)
+            return _pointer.position;
         
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         return ray.origin + ray.direction * 10;

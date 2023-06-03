@@ -1156,10 +1156,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HandScale: 10
   MoveScale: 10
-  SampleAlpha: 0.2
+  VelocityScale: 0.01
+  SampleAlpha: 0.3
   GestureControlled: 1
   RenderHandSkeleton: 0
-  _pointer: {fileID: 0}
+  _pointer: {fileID: 1373981493}
+  HandVelocities: []
 --- !u!114 &1116047793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1175,8 +1177,8 @@ MonoBehaviour:
   bentThreshold: 20
   thumbBentThreshold: 5
   gesture: 
-  gestureSwitchDelay: 0
-  _pointer: {fileID: 0}
+  gestureSwitchDelay: 0.1
+  _pointer: {fileID: 1373981494}
 --- !u!114 &1116047794
 MonoBehaviour:
   m_ObjectHideFlags: 0

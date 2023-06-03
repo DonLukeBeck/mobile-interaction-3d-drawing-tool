@@ -7,16 +7,22 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using static Unity.Mathematics.math;
 
-public class DrawingTool : HandLandmarkUser
+public class HandController : HandLandmarkUser
 {
     public float HandScale = 10;
-    public float MoveScale = 100;
+    public float MoveScale = 10;
     public float SampleAlpha = 0.5f;
+    public bool UseVelocity = false;
+    public float VelocityScale = 1;
+    public float VelocitySampleAlpha = 0.5f;
     public bool GestureControlled = true;
     public bool RenderHandSkeleton = true;
     [SerializeField] private GameObject _pointer;
 
     public Vector3[] HandPositions { get; private set; }
+    public float[] HandDepths { get; private set; }
+    private Vector3[] _prevHandPositions;
+    private Vector3[] _newHandPositions;
     private HandSkeleton[] _handSkeletons;
 
     void Start()
@@ -24,14 +30,41 @@ public class DrawingTool : HandLandmarkUser
         _pointer = GameObject.Find("Pointer");
 
         HandPositions = new Vector3[DrawingSettings.Instance.MaxNumHands];
+        _prevHandPositions = new Vector3[DrawingSettings.Instance.MaxNumHands];
+        _newHandPositions = new Vector3[DrawingSettings.Instance.MaxNumHands];
+        HandDepths = new float[DrawingSettings.Instance.MaxNumHands];
         for (int i = 0; i < HandPositions.Length; i++)
+        {
             HandPositions[i] = _pointer.transform.position;
+        }
 
         _handSkeletons = new HandSkeleton[DrawingSettings.Instance.MaxNumHands];
         for (int i = 0; i < _handSkeletons.Length; i++)
         {
             _handSkeletons[i] = new HandSkeleton(HandScale * .2f, HandScale);
             _handSkeletons[i].IsActive = false;
+        }
+    }
+
+    private void Update()
+    {
+        for (int i = 0; i < _handSkeletons.Length; i++)
+        {
+            _prevHandPositions[i] = HandPositions[i];
+            if (UseVelocity)
+                HandPositions[i].LowPassFilter(_newHandPositions[i], VelocitySampleAlpha);
+            else
+                HandPositions[i].LowPassFilter(_newHandPositions[i], SampleAlpha);
+        }
+
+        if (UseVelocity)
+        {
+            Vector3 velocity = ((HandPositions[0] - _prevHandPositions[0]) / Time.deltaTime);
+            _pointer.transform.position += velocity * VelocityScale;
+        }
+        else
+        {
+            _pointer.transform.position = HandPositions[0] * MoveScale;
         }
     }
 
@@ -52,12 +85,8 @@ public class DrawingTool : HandLandmarkUser
                 _handSkeletons[i].IsActive = true;
 
             var landmark = handLandmarkLists[i].Landmark;
-            GetPalmProperties(landmark, out float size, out Vector3 newAvgPos);
-            float depth = remap(0, 1, MoveScale, -MoveScale, size);
-
-            newAvgPos *= MoveScale;
-            newAvgPos.z += depth;
-            LowPassFilter(ref HandPositions[i], ref newAvgPos, SampleAlpha);
+            GetPalmProperties(landmark, out float size, out _newHandPositions[i]);
+            HandDepths[i] = remap(0, 1, MoveScale, -MoveScale, size);
 
             if (!RenderHandSkeleton) continue;
 
@@ -65,13 +94,11 @@ public class DrawingTool : HandLandmarkUser
             {
                 float x = landmark[o].X * MoveScale;
                 float y = landmark[o].Y * MoveScale * -1;
-                float z = landmark[o].Z * MoveScale + depth;
+                float z = landmark[o].Z * MoveScale + HandDepths[i];
 
                 _handSkeletons[i].Joints[o].transform.position = new Vector3(x, y, z);
             }
         }
-
-        _pointer.transform.position = HandPositions[0];
     }
 
     private readonly int[] _palmIdxs = { 0, 5, 17 };
@@ -104,16 +131,4 @@ public class DrawingTool : HandLandmarkUser
         size = Vector3.Distance(_bbMin, _bbMax);
         averagePosition /= _palmIdxs.Length;
     }
-
-    // https://dobrian.github.io/cmp/topics/filters/lowpassfilter.html
-    // https://stackoverflow.com/questions/4272033/how-to-implement-a-lowpass-filter
-    private void LowPassFilter(ref Vector3 output, ref Vector3 input, float alpha)
-    {
-        output = alpha * output + (1 - alpha) * input;
-    }
-    
-    // private void HighPassFilter(ref Vector3 output, ref Vector3 input, float alpha)
-    // {
-    //     output = alpha * output - (1 - alpha) * input;
-    // }
 }
