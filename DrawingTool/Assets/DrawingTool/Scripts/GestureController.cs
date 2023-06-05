@@ -15,12 +15,12 @@ public class GestureController : HandLandmarkUser
         Pointing
     }
 
-    [SerializeField] private SpriteRenderer _pointer;
+    [SerializeField] private SpriteRenderer _icon;
     [SerializeField] private HandController _handController;
     public Gesture gesture = Gesture.UnClear;
     public Vector2 StraightFingerThreshold = new Vector2(20, 20);
     public Vector2 StraightThumbThreshold = new Vector2(5, 15);
-    [Range(0, .5f)] public float isClosePercentage = .2f;
+    [Range(0, .4f)] public float isClosePercentage = .2f;
 
     private float previousSwitchTime;
     [SerializeField] private float gestureSwitchDelay;
@@ -35,7 +35,7 @@ public class GestureController : HandLandmarkUser
 
     private void Start()
     {
-        _pointer = GameObject.Find("Pointer").GetComponent<SpriteRenderer>();
+        if(_icon == null) _icon = GameObject.Find("Icon").GetComponent<SpriteRenderer>();
         _handController = GameObject.Find("Manager").GetComponent<HandController>();
         previousSwitchTime = Time.fixedTime;
 
@@ -92,7 +92,7 @@ public class GestureController : HandLandmarkUser
         {
             previousSwitchTime = Time.fixedTime;
             gesture = currGesture;
-            _pointer.sprite = GestureIcons[gesture];
+            _icon.sprite = GestureIcons[gesture];
         }
     }
 
@@ -143,7 +143,7 @@ public class GestureController : HandLandmarkUser
     private bool IsClose(Vector3 pointA, Vector3 pointB, float percentage)
     {
         float d = Vector3.Distance(pointA, pointB);
-        float palmSize = _handController.PalmSize;
+        float palmSize = _handController.PalmSize[0];
         return d < palmSize * percentage;
     }
 }

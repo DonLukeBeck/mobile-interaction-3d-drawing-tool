@@ -10,4 +10,9 @@ public static class ExtensionMethods
         currValue.y = alpha * currValue.y + (1 - alpha) * newValue.y;
         currValue.z = alpha * currValue.z + (1 - alpha) * newValue.z;
     }
+    
+    public static void LowPassFilter(ref this float currValue, float newValue, float alpha)
+    {
+        currValue = alpha * currValue + (1 - alpha) * newValue;
+    }
 }

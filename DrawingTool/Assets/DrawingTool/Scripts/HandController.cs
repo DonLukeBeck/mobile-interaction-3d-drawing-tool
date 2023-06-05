@@ -9,34 +9,53 @@ using static Unity.Mathematics.math;
 
 public class HandController : HandLandmarkUser
 {
-    [Header("General")]
+    [Header("General")] 
+    [SerializeField] private GameObject _camera;
     [SerializeField] private Transform _pointer;
     public bool GestureControlled = true;
     public bool RenderHandSkeleton = true;
-    public float PalmSize;
+    public float[] PalmSize { get; private set; }
+    
     [Header("Position Based")]
     public float HandScale = 10;
     public float MoveScale = 10;
     public float SampleAlpha = 0.5f;
+    
     [Header("Velocity Based")]
     public bool UseVelocity = false;
     public float VelocityScale = 1;
     public float VelocitySampleAlpha = 0.5f;
 
+    [Header("Depth")]
+    public Vector2 StartRange = new Vector2(0, 1);
+    public Vector2 EndRange = new Vector2(0, 10);
+    public float DepthSampleAlpha = 0.5f;
+    
+    private HandSkeleton[] _handSkeletons;
     public Vector3[] HandPositions { get; private set; }
-    public float[] HandDepths { get; private set; }
     private Vector3[] _prevHandPositions;
     private Vector3[] _newHandPositions;
-    private HandSkeleton[] _handSkeletons;
+    
+    public float[] HandDepths { get; private set; }
+    private float[] _newHandDepths;
 
+    private bool _untracked = true;
+    
     void Start()
     {
-        _pointer = GameObject.Find("Pointer").transform;
+        if(_camera == null) _camera = GameObject.Find("MainCamera");
+        if(_pointer == null) _pointer = GameObject.Find("Pointer").transform;
 
-        HandPositions = new Vector3[DrawingSettings.Instance.MaxNumHands];
-        _prevHandPositions = new Vector3[DrawingSettings.Instance.MaxNumHands];
-        _newHandPositions = new Vector3[DrawingSettings.Instance.MaxNumHands];
-        HandDepths = new float[DrawingSettings.Instance.MaxNumHands];
+        int maxNumHands = DrawingSettings.Instance.MaxNumHands;
+        PalmSize = new float[maxNumHands];
+        
+        HandPositions = new Vector3[maxNumHands];
+        _prevHandPositions = new Vector3[maxNumHands];
+        _newHandPositions = new Vector3[maxNumHands];
+        
+        HandDepths = new float[maxNumHands];
+        _newHandDepths = new float[maxNumHands];
+        
         for (int i = 0; i < HandPositions.Length; i++)
         {
             HandPositions[i] = _pointer.position;
@@ -55,12 +74,16 @@ public class HandController : HandLandmarkUser
         for (int i = 0; i < _handSkeletons.Length; i++)
         {
             _prevHandPositions[i] = HandPositions[i];
+            
             HandPositions[i].LowPassFilter(_newHandPositions[i], UseVelocity ? VelocitySampleAlpha : SampleAlpha);
+            HandDepths[i].LowPassFilter(_newHandDepths[i], DepthSampleAlpha);
+
+            HandPositions[i].z = HandDepths[i];
         }
 
         if (UseVelocity)
         {
-            Vector3 velocity = ((HandPositions[0] - _prevHandPositions[0]) / Time.deltaTime);
+            Vector3 velocity = (HandPositions[0] - _prevHandPositions[0]) / Time.deltaTime;
             _pointer.position += velocity * VelocityScale;
         }
         else
@@ -86,11 +109,10 @@ public class HandController : HandLandmarkUser
                 _handSkeletons[i].IsActive = true;
 
             var landmark = handLandmarkLists[i].Landmark;
-            GetPalmProperties(landmark, out PalmSize, out _newHandPositions[i]);
-            HandDepths[i] = remap(0, 1, MoveScale, -MoveScale, PalmSize);
+            GetPalmProperties(landmark, out PalmSize[i], out _newHandPositions[i]);
+            _newHandDepths[i] = remap(StartRange.x, StartRange.y, EndRange.x, EndRange.y, PalmSize[i]);
 
             if (!RenderHandSkeleton) continue;
-
             for (int o = 0; o < landmark.Count; o++)
             {
                 float x = landmark[o].X * MoveScale;
@@ -100,10 +122,17 @@ public class HandController : HandLandmarkUser
                 _handSkeletons[i].Joints[o].transform.position = new Vector3(x, y, z);
             }
         }
+
+        if (_untracked)
+        {
+            HandPositions[0] = _newHandPositions[0];
+            _camera.transform.position = new Vector3(HandPositions[0].x, HandPositions[0].y + 3, _camera.transform.position.z);
+            _untracked = false;
+        }
+        
     }
 
     private readonly int[] _palmIdxs = { 0, 5, 17 };
-
     private void GetPalmProperties(RepeatedField<NormalizedLandmark> landmark, out float size,
         out Vector3 averagePosition)
     {
