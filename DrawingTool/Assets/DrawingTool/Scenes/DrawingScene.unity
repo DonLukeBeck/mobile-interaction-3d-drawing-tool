@@ -1107,11 +1107,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pointer: {fileID: 1373981495}
+  _handController: {fileID: 0}
+  _gestureController: {fileID: 0}
   _drawGesture: 0
   TimeDelay: 0
   LineWidth: 0.1
-  _gestureController: {fileID: 0}
-  _handController: {fileID: 0}
 --- !u!1 &1116047789
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,10 +1182,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pointer: {fileID: 1373981494}
-  _handController: {fileID: 0}
+  _handController: {fileID: 1116047792}
   gesture: 0
-  isStraightThreshold: 10
-  isClosePercentage: 5
+  StraightFingerThreshold: {x: 20, y: 20}
+  StraightThumbThreshold: {x: 6, y: 15}
+  isClosePercentage: 0.2
   gestureSwitchDelay: 0.1
 --- !u!114 &1116047794
 MonoBehaviour:
@@ -1212,11 +1213,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pointer: {fileID: 1373981495}
+  _handController: {fileID: 1116047792}
+  _gestureController: {fileID: 1116047793}
   _drawGesture: 2
   TimeDelay: 0
   LineWidth: 0.1
-  _gestureController: {fileID: 0}
-  _handController: {fileID: 0}
 --- !u!1 &1223870913
 GameObject:
   m_ObjectHideFlags: 0
