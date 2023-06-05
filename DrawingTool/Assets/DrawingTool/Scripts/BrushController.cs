@@ -4,21 +4,22 @@ using UnityEngine;
 public class BrushController : MonoBehaviour
 {
     [SerializeField] private Transform _pointer;
+    [SerializeField] private HandController _handController;
+    [SerializeField] private GestureController _gestureController;
+    [SerializeField] private GestureController.Gesture _drawGesture = GestureController.Gesture.Pointing;
+    public float TimeDelay;
+    public float LineWidth;
+
     private List<Vector3> _linePoints;
     private float _timer;
-    public float timeDelay;
-
-    GameObject _newLine;
-    LineRenderer _drawLine;
-    public float LineWidth;
-    GestureController _gestureController;
-    HandController _handController;
+    private GameObject _newLine;
+    private LineRenderer _drawLine;
 
     // Start is called before the first frame update
     void Start()
     {
         _linePoints = new List<Vector3>();
-        _timer = timeDelay;
+        _timer = TimeDelay;
         _gestureController = GameObject.Find("Manager").GetComponent<GestureController>();
         _handController = GameObject.Find("Manager").GetComponent<HandController>();
         _pointer = GameObject.Find("Pointer").transform;
@@ -27,7 +28,7 @@ public class BrushController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) || (_gestureController.gesture == GestureController.Gestures.Fist && _handController.GestureControlled))
+        if (Input.GetMouseButtonDown(0) || (_gestureController.gesture == _drawGesture && _handController.GestureControlled))
         {
             _newLine = new GameObject();
             _newLine.transform.parent = this.transform;
@@ -40,24 +41,24 @@ public class BrushController : MonoBehaviour
             _drawLine.endColor = Color.black;
         }
 
-        if (Input.GetMouseButton(0) || (_gestureController.gesture == GestureController.Gestures.Fist && _handController.GestureControlled))
+        if (Input.GetMouseButton(0) || (_gestureController.gesture == _drawGesture && _handController.GestureControlled))
         {
-            Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red);
+            Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetPointerPosition(), Color.red);
             _timer -= Time.deltaTime;
             if (_timer <= 0)
             {
-                _linePoints.Add(GetMousePosition());
+                _linePoints.Add(GetPointerPosition());
                 _drawLine.positionCount = _linePoints.Count;
                 _drawLine.SetPositions(_linePoints.ToArray());
-                _timer = timeDelay;
+                _timer = TimeDelay;
             }
         }
 
-        if (Input.GetMouseButtonUp(0) || (_gestureController.gesture != GestureController.Gestures.Fist && _handController.GestureControlled))
+        if (Input.GetMouseButtonUp(0) || (_gestureController.gesture != _drawGesture && _handController.GestureControlled))
         {
             foreach (Vector3 point in _linePoints)
             {
-                Debug.Log(point);
+                //Debug.Log(point);
             }
 
             GenerateMeshCollider();
@@ -65,7 +66,7 @@ public class BrushController : MonoBehaviour
         }
     }
 
-    Vector3 GetMousePosition()
+    Vector3 GetPointerPosition()
     {
         if (_handController.GestureControlled)
             return _pointer.position;

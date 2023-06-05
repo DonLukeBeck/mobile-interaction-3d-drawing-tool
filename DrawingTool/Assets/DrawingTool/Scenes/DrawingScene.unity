@@ -741,7 +741,7 @@ PrefabInstance:
       objectReference: {fileID: 1264297880}
     - target: {fileID: 8571076842338426122, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8571076842338426123, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_Enabled
@@ -1107,8 +1107,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pointer: {fileID: 1373981495}
-  timeDelay: 0
+  _drawGesture: 0
+  TimeDelay: 0
   LineWidth: 0.1
+  _gestureController: {fileID: 0}
+  _handController: {fileID: 0}
 --- !u!1 &1116047789
 GameObject:
   m_ObjectHideFlags: 0
@@ -1156,9 +1159,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72139a979c7fb384d8d9190d03650591, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pointer: {fileID: 1373981493}
+  _pointer: {fileID: 1373981495}
   GestureControlled: 1
   RenderHandSkeleton: 0
+  PalmSize: 0
   HandScale: 10
   MoveScale: 10
   SampleAlpha: 0.5
@@ -1178,9 +1182,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pointer: {fileID: 1373981494}
-  bentThreshold: 20
-  thumbBentThreshold: 5
-  gesture: 
+  _handController: {fileID: 0}
+  gesture: 0
+  isStraightThreshold: 10
+  isClosePercentage: 5
   gestureSwitchDelay: 0.1
 --- !u!114 &1116047794
 MonoBehaviour:
@@ -1207,8 +1212,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pointer: {fileID: 1373981495}
-  timeDelay: 0
+  _drawGesture: 2
+  TimeDelay: 0
   LineWidth: 0.1
+  _gestureController: {fileID: 0}
+  _handController: {fileID: 0}
 --- !u!1 &1223870913
 GameObject:
   m_ObjectHideFlags: 0

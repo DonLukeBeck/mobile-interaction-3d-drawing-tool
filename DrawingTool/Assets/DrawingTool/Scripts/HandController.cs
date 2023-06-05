@@ -13,6 +13,7 @@ public class HandController : HandLandmarkUser
     [SerializeField] private Transform _pointer;
     public bool GestureControlled = true;
     public bool RenderHandSkeleton = true;
+    public float PalmSize;
     [Header("Position Based")]
     public float HandScale = 10;
     public float MoveScale = 10;
@@ -85,8 +86,8 @@ public class HandController : HandLandmarkUser
                 _handSkeletons[i].IsActive = true;
 
             var landmark = handLandmarkLists[i].Landmark;
-            GetPalmProperties(landmark, out float size, out _newHandPositions[i]);
-            HandDepths[i] = remap(0, 1, MoveScale, -MoveScale, size);
+            GetPalmProperties(landmark, out PalmSize, out _newHandPositions[i]);
+            HandDepths[i] = remap(0, 1, MoveScale, -MoveScale, PalmSize);
 
             if (!RenderHandSkeleton) continue;
 
