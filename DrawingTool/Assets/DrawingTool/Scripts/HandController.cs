@@ -1,37 +1,25 @@
-using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Google.Protobuf.Collections;
 using Mediapipe;
 using UnityEngine;
-using UnityEngine.Serialization;
 using static Unity.Mathematics.math;
 
 public class HandController : HandLandmarkUser
 {
     [Header("General")] 
-    [SerializeField] private GameObject _camera;
+    [SerializeField] private Camera _camera;
     [SerializeField] private Transform _pointer;
     public bool GestureControlled = true;
-    public bool RenderHandSkeleton = true;
+    public int GestureIdx = 8;
+    [SerializeField] private float SampleAlpha = 0.5f;
     public float[] PalmSize { get; private set; }
+    [SerializeField] private float MouseDepth = 50;
     
-    [Header("Position Based")]
-    public float HandScale = 10;
-    public float MoveScale = 10;
-    public float SampleAlpha = 0.5f;
-    
-    [Header("Velocity Based")]
-    public bool UseVelocity = false;
-    public float VelocityScale = 1;
-    public float VelocitySampleAlpha = 0.5f;
-
     [Header("Depth")]
-    public Vector2 StartRange = new Vector2(0, 1);
-    public Vector2 EndRange = new Vector2(0, 10);
+    public Vector2 StartRange = new (0, 1);
+    public Vector2 EndRange = new (0, 10);
     public float DepthSampleAlpha = 0.5f;
     
-    private HandSkeleton[] _handSkeletons;
     public Vector3[] HandPositions { get; private set; }
     private Vector3[] _prevHandPositions;
     private Vector3[] _newHandPositions;
@@ -43,7 +31,7 @@ public class HandController : HandLandmarkUser
     
     void Start()
     {
-        if(_camera == null) _camera = GameObject.Find("MainCamera");
+        if(_camera == null) _camera = GameObject.Find("MainCamera").GetComponent<Camera>();
         if(_pointer == null) _pointer = GameObject.Find("Pointer").transform;
 
         int maxNumHands = DrawingSettings.Instance.MaxNumHands;
@@ -60,35 +48,32 @@ public class HandController : HandLandmarkUser
         {
             HandPositions[i] = _pointer.position;
         }
-
-        _handSkeletons = new HandSkeleton[DrawingSettings.Instance.MaxNumHands];
-        for (int i = 0; i < _handSkeletons.Length; i++)
-        {
-            _handSkeletons[i] = new HandSkeleton(HandScale * .2f, HandScale);
-            _handSkeletons[i].IsActive = false;
-        }
     }
 
     private void Update()
     {
-        for (int i = 0; i < _handSkeletons.Length; i++)
+        for (int i = 0; i < HandPositions.Length; i++)
         {
             _prevHandPositions[i] = HandPositions[i];
             
-            HandPositions[i].LowPassFilter(_newHandPositions[i], UseVelocity ? VelocitySampleAlpha : SampleAlpha);
+            HandPositions[i].LowPassFilter(_newHandPositions[i], SampleAlpha);
             HandDepths[i].LowPassFilter(_newHandDepths[i], DepthSampleAlpha);
-
-            HandPositions[i].z = HandDepths[i];
         }
 
-        if (UseVelocity)
+        if (GestureControlled)
         {
-            Vector3 velocity = (HandPositions[0] - _prevHandPositions[0]) / Time.deltaTime;
-            _pointer.position += velocity * VelocityScale;
+            float u = HandPositions[0].x;
+            float v = HandPositions[0].y;
+
+            Vector3 p = _camera.ViewportToWorldPoint(new Vector3(u, v, HandDepths[0]));
+            p.y *= -1;
+            _pointer.position = p;
         }
         else
         {
-            _pointer.position = HandPositions[0] * MoveScale;
+            float u = Input.mousePosition.x / 1920;
+            float v = Input.mousePosition.y / 1080;
+            _pointer.position = _camera.ViewportToWorldPoint(new Vector3(u, v, MouseDepth));
         }
     }
 
@@ -97,58 +82,34 @@ public class HandController : HandLandmarkUser
     {
         if (handLandmarkLists == null) return;
 
-        for (int i = 0; i < _handSkeletons.Length; i++)
+        for (int i = 0; i < HandPositions.Length; i++)
         {
-            if (i > handLandmarkLists.Count - 1)
-            {
-                _handSkeletons[i].IsActive = false;
-                continue;
-            }
-
-            if (RenderHandSkeleton)
-                _handSkeletons[i].IsActive = true;
-
             var landmark = handLandmarkLists[i].Landmark;
-            GetPalmProperties(landmark, out PalmSize[i], out _newHandPositions[i]);
+            _newHandPositions[i].x = landmark[8].X;
+            _newHandPositions[i].y = landmark[8].Y;
+            
+            PalmSize[i] = GetPalmSize(landmark);
             _newHandDepths[i] = remap(StartRange.x, StartRange.y, EndRange.x, EndRange.y, PalmSize[i]);
-
-            if (!RenderHandSkeleton) continue;
-            for (int o = 0; o < landmark.Count; o++)
-            {
-                float x = landmark[o].X * MoveScale;
-                float y = landmark[o].Y * MoveScale * -1;
-                float z = landmark[o].Z * MoveScale + HandDepths[i];
-
-                _handSkeletons[i].Joints[o].transform.position = new Vector3(x, y, z);
-            }
         }
 
         if (_untracked)
         {
             HandPositions[0] = _newHandPositions[0];
-            _camera.transform.position = new Vector3(HandPositions[0].x, HandPositions[0].y + 3, _camera.transform.position.z);
             _untracked = false;
         }
-        
     }
 
     private readonly int[] _palmIdxs = { 0, 5, 17 };
-    private void GetPalmProperties(RepeatedField<NormalizedLandmark> landmark, out float size,
-        out Vector3 averagePosition)
+    private float GetPalmSize(RepeatedField<NormalizedLandmark> landmark)
     {
         Vector3 _bbMin = new Vector3(int.MaxValue, int.MaxValue, int.MaxValue);
         Vector3 _bbMax = new Vector3(int.MinValue, int.MinValue, int.MinValue);
 
-        averagePosition = new Vector3();
         foreach (var idx in _palmIdxs)
         {
             float x = landmark[idx].X;
             float y = landmark[idx].Y * -1;
             float z = landmark[idx].Z;
-
-            averagePosition.x += x;
-            averagePosition.y += y;
-            averagePosition.z += z;
 
             if (_bbMin.x > x) _bbMin.x = x;
             if (_bbMax.x < x) _bbMax.x = x;
@@ -158,7 +119,6 @@ public class HandController : HandLandmarkUser
             if (_bbMax.z < z) _bbMax.z = z;
         }
 
-        size = Vector3.Distance(_bbMin, _bbMax);
-        averagePosition /= _palmIdxs.Length;
+        return Vector3.Distance(_bbMin, _bbMax);
     }
 }

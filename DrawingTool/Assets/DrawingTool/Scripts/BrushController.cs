@@ -45,11 +45,11 @@ public class BrushController : MonoBehaviour
         if (Input.GetMouseButton(0) ||
             (_gestureController.gesture == _drawGesture && _handController.GestureControlled))
         {
-            Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetPointerPosition(), Color.red);
+            //Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), _pointer.position, Color.red);
             _timer -= Time.deltaTime;
             if (_timer <= 0)
             {
-                _linePoints.Add(GetPointerPosition());
+                _linePoints.Add(_pointer.position);
                 _drawLine.positionCount = _linePoints.Count;
                 _drawLine.SetPositions(_linePoints.ToArray());
                 _timer = TimeDelay;
@@ -59,23 +59,9 @@ public class BrushController : MonoBehaviour
         if (Input.GetMouseButtonUp(0) ||
             (_gestureController.gesture != _drawGesture && _handController.GestureControlled))
         {
-            foreach (Vector3 point in _linePoints)
-            {
-                //Debug.Log(point);
-            }
-
             GenerateMeshCollider();
             _linePoints.Clear();
         }
-    }
-
-    Vector3 GetPointerPosition()
-    {
-        if (_handController.GestureControlled)
-            return _pointer.position;
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        return ray.origin + ray.direction * 10;
     }
 
     public void GenerateMeshCollider()
