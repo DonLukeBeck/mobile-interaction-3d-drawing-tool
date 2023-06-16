@@ -11,7 +11,6 @@ public class GestureController : HandLandmarkUser
         UnClear,
         Open,
         OK,
-        ThumbsUp,
         Pointing
     }
 
@@ -44,7 +43,6 @@ public class GestureController : HandLandmarkUser
         GestureIcons.Add(Gesture.Open, Resources.Load<Sprite>("Sprites/hand_icon"));
         GestureIcons.Add(Gesture.OK, Resources.Load<Sprite>("Sprites/draw_icon"));
         GestureIcons.Add(Gesture.Pointing, Resources.Load<Sprite>("Sprites/draw_icon"));
-        GestureIcons.Add(Gesture.ThumbsUp, Resources.Load<Sprite>("Sprites/draw_icon"));
     }
 
     public override void ProcessHandLandmark(IList<NormalizedLandmarkList> handLandmarkLists,
@@ -107,7 +105,6 @@ public class GestureController : HandLandmarkUser
     {
         if (ok && !index && !middle && !ring && !pinky) return Gesture.OK;
         if (index && !thumb && !middle && !ring && !pinky) return Gesture.Pointing;
-        if (thumb && !middle && !ring && !pinky) return Gesture.ThumbsUp;
         if (index && middle && ring && pinky) return Gesture.Open;
         return Gesture.UnClear;
     }
