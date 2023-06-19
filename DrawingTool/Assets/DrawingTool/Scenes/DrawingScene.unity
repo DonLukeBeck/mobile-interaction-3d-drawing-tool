@@ -200,9 +200,6 @@ MonoBehaviour:
   _handRectsFromPalmDetectionsAnnotationController: {fileID: 841116732}
   _handLandmarksAnnotationController: {fileID: 841116731}
   _handRectsFromLandmarksAnnotationController: {fileID: 841116730}
-  _handLandmarkUsers:
-  - {fileID: 1116047792}
-  - {fileID: 1116047793}
 --- !u!114 &275874970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1126,11 +1123,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8571076842341243440, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8571076842341243442, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8571076842432811635, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_Layer
@@ -1138,7 +1135,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8571076842432811645, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8571076842583978906, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_Layer
@@ -1226,23 +1223,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8571076844286272849, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8571076844286272849, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8571076844286272849, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1878
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8571076844286272849, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -35
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8571076844286272851, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8571076844286272854, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_Layer
@@ -1561,7 +1558,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f0b82baca11b4d46a5b63c9e81885c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _brushController: {fileID: 0}
+  _brushController: {fileID: 1116047796}
   UI: {fileID: 1969958078}
   TimerText: {fileID: 2057447279}
   TaskText: {fileID: 396272763}
