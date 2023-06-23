@@ -1,2 +1,2 @@
-# mobile-interaction-3d-drawing-tool
-Mobile Interaction 3D drawing tool using hand tracking
+# Drawing Tool
+After cloning the repository import the .unitypackage [MediaPipeUnityPlugin](https://github.com/homuler/MediaPipeUnityPlugin).
